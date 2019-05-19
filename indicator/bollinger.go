@@ -3,12 +3,12 @@ package indicator
 import "math"
 
 var (
+	bollN, bollK uint64
 	upBollList, midBollList, downBollList []float64
-	bolln, bollk uint64
 )
 
-func InitBoll(n, k uint64)  {
-	bolln, bollk = n, k
+func InitBollinger(n, k uint64)  {
+	bollN, bollK = n, k
 }
 
 func AppendUpBoll(upBoll float64)  {
@@ -23,17 +23,18 @@ func AppendDownBoll(downBoll float64)  {
 	downBollList = append(downBollList, downBoll)
 }
 
-func GetBoll(currentIndex uint64) (upBoll, midBoll, downBoll float64) {
-	upBoll = math.NaN()
-	midBoll = math.NaN()
-	downBoll = math.NaN()
-	if currentIndex < bolln {
+func GetBollinger(currentIndex uint64) (up, mid, down float64) {
+	up = math.NaN()
+	mid = math.NaN()
+	down = math.NaN()
+
+	if currentIndex < bollN {
 		return
 	}
 
-	midBoll = toFixed(avg(priceList, currentIndex-bolln, currentIndex), 4)
-	v := standardDeviation(priceList, currentIndex-bolln, currentIndex)
-	upBoll = toFixed(midBoll+v*float64(bollk), 4)
-	downBoll = toFixed(midBoll-v*float64(bollk), 4)
+	mid = ToFixed(ClosePriceAvg(priceList, currentIndex-bollN, currentIndex), 4)
+	sd := ClosePriceStandardDeviation(priceList, currentIndex-bollN, currentIndex)
+	up = ToFixed(mid+sd*float64(bollK), 4)
+	down = ToFixed(mid-sd*float64(bollK), 4)
 	return
 }

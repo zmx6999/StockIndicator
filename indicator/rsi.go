@@ -3,12 +3,12 @@ package indicator
 import "math"
 
 var (
-	upList, downList, upEMAList, downEMAList, rsiList []float64
-	rsin uint64
+	rsiN uint64
+	upList, downList, upEmaList, downEmaList, rsiList []float64
 )
 
 func InitRSI(n uint64)  {
-	rsin = n
+	rsiN = n
 }
 
 func AppendUp(up float64)  {
@@ -19,62 +19,62 @@ func AppendDown(down float64)  {
 	downList = append(downList, down)
 }
 
-func AppendUpEMA(upEMA float64)  {
-	upEMAList = append(upEMAList, upEMA)
+func AppendUpEma(upEma float64)  {
+	upEmaList = append(upEmaList, upEma)
 }
 
-func AppendDownEMA(downDEA float64)  {
-	downEMAList = append(downEMAList, downDEA)
+func AppendDownEma(downEma float64)  {
+	downEmaList = append(downEmaList, downEma)
 }
 
-func AppendRSI(rsi float64)  {
+func AppendRsi(rsi float64)  {
 	rsiList = append(rsiList, rsi)
 }
 
-func GetUpDownEMA(currentIndex uint64, upDownList []float64, currentUpDown float64, emaList []float64) (ema float64) {
-	if currentIndex <= rsin {
+func GetUpDownEMA(currentIndex uint64, upDownList []float64, emaList []float64, currentUpDown float64) (ema float64) {
+	if currentIndex <= rsiN {
 		ema = math.NaN()
 		return
 	}
 
-	if currentIndex == rsin+1 {
-		 _upDownList := make([]float64, rsin)
-		 copy(_upDownList, upDownList[currentIndex-rsin:])
-		 _upDownList[rsin-1] = currentUpDown
-		 ema = toFixed(avg(_upDownList, 0, rsin), 4)
-		 return
+	if currentIndex == rsiN+1 {
+		_upDownList := make([]float64, rsiN)
+		copy(_upDownList, upDownList[1:])
+		_upDownList[rsiN-1] = currentUpDown
+		ema = ToFixed(Avg(_upDownList, 0, rsiN), 4)
+		return
 	}
 
-	last := len(emaList)-1
-	lastEMA := emaList[last]
-	ema = toFixed((lastEMA*float64(rsin-1)+currentUpDown)/float64(rsin), 4)
+	lastEma := emaList[len(emaList)-1]
+	ema = ToFixed((lastEma*float64(rsiN-1)+currentUpDown)/float64(rsiN), 4)
 	return
 }
 
-func GetRSI(currentIndex uint64) (up, down, upEMA, downEMA, rsi float64) {
+func GetRSI(currentIndex uint64) (up, down, upEma, downEma, rsi float64) {
 	up = math.NaN()
 	down = math.NaN()
-	upEMA = math.NaN()
-	downEMA = math.NaN()
+	upEma = math.NaN()
+	downEma = math.NaN()
 	rsi = math.NaN()
 
 	if currentIndex <= 1 {
 		return
 	}
 
-	if priceList[currentIndex-1] > priceList[currentIndex-2] {
-		up = priceList[currentIndex-1]-priceList[currentIndex-2]
+	if priceList[currentIndex-1].Close > priceList[currentIndex-2].Close {
+		up = priceList[currentIndex-1].Close-priceList[currentIndex-2].Close
 		down = 0
 	} else {
 		up = 0
-		down = priceList[currentIndex-2]-priceList[currentIndex-1]
+		down = priceList[currentIndex-2].Close-priceList[currentIndex-1].Close
 	}
 
-	upEMA = GetUpDownEMA(currentIndex, upList, up, upEMAList)
-	downEMA = GetUpDownEMA(currentIndex, downList, down, downEMAList)
-	if upEMA == math.NaN() || downEMA == math.NaN() {
+	upEma = GetUpDownEMA(currentIndex, upList, upEmaList, up)
+	downEma = GetUpDownEMA(currentIndex, downList, downEmaList, down)
+	if upEma == math.NaN() || downEma == math.NaN() {
 		return
 	}
-	rsi = toFixed(upEMA/(upEMA+downEMA)*100, 4)
+
+	rsi = ToFixed(upEma/(upEma+downEma)*100, 4)
 	return
 }
