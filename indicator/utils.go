@@ -89,6 +89,54 @@ func StandardDeviation(x []float64, start uint64, end uint64) (s float64) {
 	return
 }
 
+func Max(x []float64, start uint64, end uint64) (m float64) {
+	if start > uint64(len(x)) || end > uint64(len(x)) {
+		m = math.NaN()
+		return
+	}
+
+	if start == end {
+		m = math.NaN()
+		return
+	}
+
+	if start > end {
+		start, end = end, start
+	}
+
+	m = x[start]
+	for i := start+1; i < end; i++ {
+		if x[i] > m {
+			m = x[i]
+		}
+	}
+	return
+}
+
+func Min(x []float64, start uint64, end uint64) (m float64) {
+	if start > uint64(len(x)) || end > uint64(len(x)) {
+		m = math.NaN()
+		return
+	}
+
+	if start == end {
+		m = math.NaN()
+		return
+	}
+
+	if start > end {
+		start, end = end, start
+	}
+
+	m = x[start]
+	for i := start+1; i < end; i++ {
+		if x[i] < m {
+			m = x[i]
+		}
+	}
+	return
+}
+
 func ToFixed(x float64, decimal uint64) (y float64) {
 	y, _ = strconv.ParseFloat(fmt.Sprintf("%."+strconv.Itoa(int(decimal))+"f", x), 64)
 	return

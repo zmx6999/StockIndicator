@@ -18,7 +18,7 @@ func main()  {
 		{446.80, 480.00, 421.18, 423.99},
 		{423.99, 489.00, 394.99, 466.44},
 		{466.39, 752.00, 460.00, 680.00},
-		{680.01, 852.23, 663.05, 765.38},
+		{680.01, 858.23, 663.05, 765.38},
 		{766.79, 798.99, 500.00, 742.15},
 		{741.49, 769.99, 650.00, 716.74},
 		{716.74, 1035.00, 716.42, 982.99},
@@ -89,5 +89,16 @@ func main()  {
 		indicator.AppendDownBoll(down)
 
 		fmt.Println(i, mid, up, down)
+	}
+
+	indicator.InitKDJ(14, 1, 3)
+	for i := 1; i <= len(priceList); i++ {
+		rsv, k, d, j := indicator.GetKDJ(uint64(i))
+		indicator.AppendRSV(rsv)
+		indicator.AppendK(k)
+		indicator.AppendD(d)
+		indicator.AppendJ(j)
+
+		fmt.Println(i, k, d, j)
 	}
 }

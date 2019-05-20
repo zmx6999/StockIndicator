@@ -35,6 +35,46 @@ func getClosePriceList(x []Price, start uint64, end uint64) (y []float64) {
 	return
 }
 
+func getHighPriceList(x []Price, start uint64, end uint64) (y []float64) {
+	if start > uint64(len(x)) || end > uint64(len(x)) {
+		return
+	}
+
+	if start == end {
+		return
+	}
+
+	if start > end {
+		start, end = end, start
+	}
+
+	for i := start; i < end; i++ {
+		y = append(y, x[i].High)
+	}
+
+	return
+}
+
+func getLowPriceList(x []Price, start uint64, end uint64) (y []float64) {
+	if start > uint64(len(x)) || end > uint64(len(x)) {
+		return
+	}
+
+	if start == end {
+		return
+	}
+
+	if start > end {
+		start, end = end, start
+	}
+
+	for i := start; i < end; i++ {
+		y = append(y, x[i].Low)
+	}
+
+	return
+}
+
 func ClosePriceSum(x []Price, start uint64, end uint64) (s float64) {
 	y := getClosePriceList(x, start, end)
 	s = Sum(y, 0, uint64(len(y)))
@@ -56,5 +96,17 @@ func ClosePriceVariance(x []Price, start uint64, end uint64) (v float64) {
 func ClosePriceStandardDeviation(x []Price, start uint64, end uint64) (s float64) {
 	y := getClosePriceList(x, start, end)
 	s = StandardDeviation(y, 0, uint64(len(y)))
+	return
+}
+
+func HighestPrice(x []Price, start uint64, end uint64) (m float64) {
+	y := getHighPriceList(x, start, end)
+	m = Max(y, 0, uint64(len(y)))
+	return
+}
+
+func LowestPrice(x []Price, start uint64, end uint64) (m float64) {
+	y := getLowPriceList(x, start, end)
+	m = Min(y, 0, uint64(len(y)))
 	return
 }
