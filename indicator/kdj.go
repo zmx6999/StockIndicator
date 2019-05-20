@@ -35,10 +35,10 @@ func GetRSV(currentIndex uint64) (rsv float64) {
 		return
 	}
 
-	high := HighestPrice(priceList, currentIndex-kdjN, currentIndex)
-	low := LowestPrice(priceList, currentIndex-kdjN, currentIndex)
+	high := HighPrice(priceList, currentIndex-kdjN, currentIndex)
+	low := LowPrice(priceList, currentIndex-kdjN, currentIndex)
 	cl := priceList[currentIndex-1].Close
-	rsv = ToFixed((cl-low)/(high-low)*100, 4)
+	rsv = (cl-low)/(high-low)*100
 	return
 }
 
@@ -52,7 +52,7 @@ func GetK(currentIndex uint64, currentRSV float64) (k float64) {
 	_rsvList := make([]float64, kdjK)
 	copy(_rsvList, rsvList[currentIndex-kdjK:])
 	_rsvList[kdjK-1] = currentRSV
-	k = ToFixed(Avg(_rsvList, 0, kdjK), 4)
+	k = Avg(_rsvList, 0, kdjK)
 	return
 }
 
@@ -66,7 +66,7 @@ func GetD(currentIndex uint64, currentK float64) (d float64) {
 	_kList := make([]float64, kdjD)
 	copy(_kList, kList[currentIndex-kdjD:])
 	_kList[kdjD-1] = currentK
-	d = ToFixed(Avg(_kList, 0, kdjD), 4)
+	d = Avg(_kList, 0, kdjD)
 	return
 }
 
@@ -74,6 +74,7 @@ func GetKDJ(currentIndex uint64) (rsv, k, d, j float64) {
 	k = math.NaN()
 	d = math.NaN()
 	j = math.NaN()
+
 	rsv = GetRSV(currentIndex)
 	if rsv == math.NaN() {
 		return
@@ -89,6 +90,6 @@ func GetKDJ(currentIndex uint64) (rsv, k, d, j float64) {
 		return
 	}
 
-	j = ToFixed(k*3-d*2, 4)
+	j = k*3-d*2
 	return
 }

@@ -1,19 +1,15 @@
 package indicator
 
-import (
-	"math"
-	"strconv"
-	"fmt"
-)
+import "math"
 
-func Sum(x []float64, start uint64, end uint64) (s float64) {
+func Sum(x []float64, start uint64, end uint64) (y float64) {
 	if start > uint64(len(x)) || end > uint64(len(x)) {
-		s = math.NaN()
+		y = math.NaN()
 		return
 	}
 
 	if start == end {
-		s = math.NaN()
+		y = math.NaN()
 		return
 	}
 
@@ -22,19 +18,19 @@ func Sum(x []float64, start uint64, end uint64) (s float64) {
 	}
 
 	for i := start; i < end; i++ {
-		s += x[i]
+		y += x[i]
 	}
 	return
 }
 
-func Avg(x []float64, start uint64, end uint64) (a float64) {
+func Avg(x []float64, start uint64, end uint64) (y float64) {
 	if start > uint64(len(x)) || end > uint64(len(x)) {
-		a = math.NaN()
+		y = math.NaN()
 		return
 	}
 
 	if start == end {
-		a = math.NaN()
+		y = math.NaN()
 		return
 	}
 
@@ -42,18 +38,18 @@ func Avg(x []float64, start uint64, end uint64) (a float64) {
 		start, end = end, start
 	}
 
-	a = Sum(x, start, end)/float64(end-start)
+	y = Sum(x, start, end)/float64(end-start)
 	return
 }
 
-func Variance(x []float64, start uint64, end uint64) (v float64) {
+func Variance(x []float64, start uint64, end uint64) (y float64) {
 	if start > uint64(len(x)) || end > uint64(len(x)) {
-		v = math.NaN()
+		y = math.NaN()
 		return
 	}
 
 	if start == end {
-		v = math.NaN()
+		y = math.NaN()
 		return
 	}
 
@@ -66,18 +62,18 @@ func Variance(x []float64, start uint64, end uint64) (v float64) {
 	for i := start; i < end; i++ {
 		s += math.Pow(x[i]-a, 2)
 	}
-	v = s/float64(end-start)
+	y = s/float64(end-start)
 	return
 }
 
-func StandardDeviation(x []float64, start uint64, end uint64) (s float64) {
+func StandardDeviation(x []float64, start uint64, end uint64) (y float64) {
 	if start > uint64(len(x)) || end > uint64(len(x)) {
-		s = math.NaN()
+		y = math.NaN()
 		return
 	}
 
 	if start == end {
-		s = math.NaN()
+		y = math.NaN()
 		return
 	}
 
@@ -85,18 +81,18 @@ func StandardDeviation(x []float64, start uint64, end uint64) (s float64) {
 		start, end = end, start
 	}
 
-	s = math.Pow(Variance(x, start, end), 0.5)
+	y = math.Pow(Variance(x, start, end), 0.5)
 	return
 }
 
-func Max(x []float64, start uint64, end uint64) (m float64) {
+func Max(x []float64, start uint64, end uint64) (y float64) {
 	if start > uint64(len(x)) || end > uint64(len(x)) {
-		m = math.NaN()
+		y = math.NaN()
 		return
 	}
 
 	if start == end {
-		m = math.NaN()
+		y = math.NaN()
 		return
 	}
 
@@ -104,23 +100,23 @@ func Max(x []float64, start uint64, end uint64) (m float64) {
 		start, end = end, start
 	}
 
-	m = x[start]
+	y = x[start]
 	for i := start+1; i < end; i++ {
-		if x[i] > m {
-			m = x[i]
+		if x[i] > y {
+			y = x[i]
 		}
 	}
 	return
 }
 
-func Min(x []float64, start uint64, end uint64) (m float64) {
+func Min(x []float64, start uint64, end uint64) (y float64) {
 	if start > uint64(len(x)) || end > uint64(len(x)) {
-		m = math.NaN()
+		y = math.NaN()
 		return
 	}
 
 	if start == end {
-		m = math.NaN()
+		y = math.NaN()
 		return
 	}
 
@@ -128,16 +124,11 @@ func Min(x []float64, start uint64, end uint64) (m float64) {
 		start, end = end, start
 	}
 
-	m = x[start]
+	y = x[start]
 	for i := start+1; i < end; i++ {
-		if x[i] < m {
-			m = x[i]
+		if x[i] < y {
+			y = x[i]
 		}
 	}
-	return
-}
-
-func ToFixed(x float64, decimal uint64) (y float64) {
-	y, _ = strconv.ParseFloat(fmt.Sprintf("%."+strconv.Itoa(int(decimal))+"f", x), 64)
 	return
 }

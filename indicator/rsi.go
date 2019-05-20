@@ -27,11 +27,11 @@ func AppendDownEma(downEma float64)  {
 	downEmaList = append(downEmaList, downEma)
 }
 
-func AppendRsi(rsi float64)  {
+func AppendRSI(rsi float64)  {
 	rsiList = append(rsiList, rsi)
 }
 
-func GetUpDownEMA(currentIndex uint64, upDownList []float64, emaList []float64, currentUpDown float64) (ema float64) {
+func GetUpDownEMA(currentIndex uint64, upDownList []float64, upDownEmaList []float64, currentUpDown float64) (ema float64) {
 	if currentIndex <= rsiN {
 		ema = math.NaN()
 		return
@@ -41,12 +41,12 @@ func GetUpDownEMA(currentIndex uint64, upDownList []float64, emaList []float64, 
 		_upDownList := make([]float64, rsiN)
 		copy(_upDownList, upDownList[1:])
 		_upDownList[rsiN-1] = currentUpDown
-		ema = ToFixed(Avg(_upDownList, 0, rsiN), 4)
+		ema = Avg(_upDownList, 0, rsiN)
 		return
 	}
 
-	lastEma := emaList[len(emaList)-1]
-	ema = ToFixed((lastEma*float64(rsiN-1)+currentUpDown)/float64(rsiN), 4)
+	lastEma := upDownEmaList[len(upDownEmaList)-1]
+	ema = (lastEma*float64(rsiN-1)+currentUpDown)/float64(rsiN)
 	return
 }
 
@@ -75,6 +75,6 @@ func GetRSI(currentIndex uint64) (up, down, upEma, downEma, rsi float64) {
 		return
 	}
 
-	rsi = ToFixed(upEma/(upEma+downEma)*100, 4)
+	rsi =upEma/(upEma+downEma)*100
 	return
 }

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"190519/indicator"
+	"190520/indicator"
 	"fmt"
 )
 
@@ -66,6 +66,9 @@ func main()  {
 		indicator.AppendDea(dea)
 		indicator.AppendMacd(macd)
 
+		macd = indicator.ToFix(macd, 4)
+		diff = indicator.ToFix(diff, 4)
+		dea = indicator.ToFix(dea, 4)
 		fmt.Println(i, macd, diff, dea)
 	}
 
@@ -76,19 +79,10 @@ func main()  {
 		indicator.AppendDown(down)
 		indicator.AppendUpEma(upEma)
 		indicator.AppendDownEma(downEma)
-		indicator.AppendRsi(rsi)
+		indicator.AppendRSI(rsi)
 
+		rsi = indicator.ToFix(rsi, 4)
 		fmt.Println(i, rsi)
-	}
-
-	indicator.InitBollinger(20, 2)
-	for i := 1; i <= len(priceList); i++ {
-		up, mid, down := indicator.GetBollinger(uint64(i))
-		indicator.AppendUpBoll(up)
-		indicator.AppendMidBoll(mid)
-		indicator.AppendDownBoll(down)
-
-		fmt.Println(i, mid, up, down)
 	}
 
 	indicator.InitKDJ(14, 1, 3)
@@ -99,6 +93,22 @@ func main()  {
 		indicator.AppendD(d)
 		indicator.AppendJ(j)
 
+		k = indicator.ToFix(k, 4)
+		d = indicator.ToFix(d, 4)
+		j = indicator.ToFix(j, 4)
 		fmt.Println(i, k, d, j)
+	}
+
+	indicator.InitBollinger(20, 2)
+	for i := 1; i <= len(priceList); i++ {
+		up, mid, down := indicator.GetBollinger(uint64(i))
+		indicator.AppendBollingerUp(up)
+		indicator.AppendBollingerMid(mid)
+		indicator.AppendBollingerDown(down)
+
+		up = indicator.ToFix(up, 4)
+		mid = indicator.ToFix(mid, 4)
+		down = indicator.ToFix(down, 4)
+		fmt.Println(i, up, mid, down)
 	}
 }

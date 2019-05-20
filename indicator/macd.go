@@ -9,7 +9,7 @@ var (
 
 func InitMACD(x, y, z uint64)  {
 	if x > y {
-		x, y = y, z
+		x, y = y, x
 	}
 	macdX, macdY, macdZ = x, y, z
 }
@@ -34,19 +34,19 @@ func AppendMacd(macd float64)  {
 	macdList = append(macdList, macd)
 }
 
-func GetEMA(currentIndex uint64, emaList []float64, n uint64) (ema float64) {
+func GetEMA(currentIndex uint64, emaList []float64, currentPrice float64, n uint64) (ema float64) {
 	if currentIndex < n {
 		ema = math.NaN()
 		return
 	}
 
 	if currentIndex == n {
-		ema = ToFixed(ClosePriceAvg(priceList, 0, n), 4)
+		ema = ClosePriceAvg(priceList, 0, n)
 		return
 	}
 
 	lastEma := emaList[len(emaList)-1]
-	ema = ToFixed((lastEma*float64(n-1)+priceList[currentIndex-1].Close*2)/float64(n+1), 4)
+	ema = (lastEma*float64(n-1)+currentPrice*2)/float64(n+1)
 	return
 }
 
@@ -61,12 +61,12 @@ func GetDEA(currentIndex uint64, currentDiff float64) (dea float64) {
 		_diffList := make([]float64, macdZ)
 		copy(_diffList, diffList[macdY-1:])
 		_diffList[macdZ-1] = currentDiff
-		dea = ToFixed(Avg(_diffList, 0, macdZ), 4)
+		dea = Avg(_diffList,0, macdZ)
 		return
 	}
 
 	lastDea := deaList[len(deaList)-1]
-	dea = ToFixed((lastDea*float64(macdZ-1)+currentDiff*2)/float64(macdZ+1), 4)
+	dea = (lastDea*float64(macdZ-1)+currentDiff*2)/float64(macdZ+1)
 	return
 }
 
@@ -75,18 +75,18 @@ func GetMACD(currentIndex uint64) (emaX, emaY, diff, dea, macd float64) {
 	dea = math.NaN()
 	macd = math.NaN()
 
-	emaX = GetEMA(currentIndex, emaXList, macdX)
-	emaY = GetEMA(currentIndex, emaYList, macdY)
+	emaX = GetEMA(currentIndex, emaXList, priceList[currentIndex-1].Close, macdX)
+	emaY = GetEMA(currentIndex, emaYList, priceList[currentIndex-1].Close, macdY)
 	if emaX == math.NaN() || emaY == math.NaN() {
 		return
 	}
 
-	diff = ToFixed(emaX-emaY, 4)
+	diff = emaX-emaY
 	dea = GetDEA(currentIndex, diff)
 	if dea == math.NaN() {
 		return
 	}
 
-	macd = ToFixed(diff-dea, 4)
+	macd = diff-dea
 	return
 }
