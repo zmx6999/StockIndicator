@@ -85,7 +85,7 @@ func main()  {
 		fmt.Println(i, rsi)
 	}
 
-	indicator.InitKDJ(14, 1, 3)
+	indicator.InitKDJ(9, 3, 3)
 	for i := 1; i <= len(priceList); i++ {
 		rsv, k, d, j := indicator.GetKDJ(uint64(i))
 		indicator.AppendRSV(rsv)
